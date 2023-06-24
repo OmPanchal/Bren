@@ -64,7 +64,7 @@ class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
 		return self.__class__(val, dtype=self.dtype, source=source)
 
 	def __array_ufunc__(self, ufunc, method, *inps, **kwargs):
-		print(ufunc)
+		# print(ufunc)
 		if method == "__call__":
 			scalars, sources = self.__set_source_scalar(inps)
 

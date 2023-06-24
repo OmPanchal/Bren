@@ -3,6 +3,7 @@ import bren as br
 from bren.nn.metrics import get_metric
 from bren.nn.losses import get_loss
 from bren.nn.optimisers import get_optimiser
+import pickle
 
 
 # TODO: Try to impement steps into training
@@ -78,7 +79,7 @@ class Model(object):
 	def fit(self, x, y, epochs=1, shuffle=False, batch_size=1, *args, **kwargs):
 		if not self.__assembled: raise RuntimeError("The model should be assembled before you can train with it.")
 		if not self.__built: self.build(x)
-
+		
 		X_batch = br.nn.preprocessing.split_uneven(x, batch_size)[..., np.newaxis]
 		Y_batch = br.nn.preprocessing.split_uneven(y, batch_size)[..., np.newaxis]
 
@@ -101,8 +102,6 @@ class Model(object):
 		loss = []
 		for x, y in zip(X, Y):
 			Z = self.call(x, training=training)
-			# print(Z)
-			# print(Z.shape)
 			loss.append(self.loss(Z, y))
 			
 			for metric in self.metrics:
@@ -124,7 +123,9 @@ class Model(object):
 
 		return np.array(output)
 	
-	def save(filepath): ... 
+	def save_weights(self, filepath): 
+		with open(filepath, "wb") as f:
+			pickle.dump(self.trainable, f)
 			
 
 #! TRAIN

@@ -1,11 +1,13 @@
 import bren.autodiff.nodes as nodes
 
 
+def return_values(x): return x.value
+
 class Operator(nodes.Node):
 
 	def __init__(self, inputs, value=None, name="Operator", **kwargs) -> None:
 		self.inputs = inputs
-		self.scalars = list(map(lambda x: x.value, self.inputs))
+		self.scalars = list(map(return_values, self.inputs))
 		self.grad = kwargs.get("grad")
 		super().__init__(value, name)
 

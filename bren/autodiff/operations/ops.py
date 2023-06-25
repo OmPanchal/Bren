@@ -132,5 +132,3 @@ def transpose_grad(a, dout, **kwargs): return [dout.T]
 
 @ufunc_grad(np.mean.__name__)
 def mean_grad(a, dout, **kwargs): return [np.divide(dout, a.size)]
-
-# still have to add stuff like np.reciprocal

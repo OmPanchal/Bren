@@ -96,7 +96,7 @@ class Model(object):
 			self.__config["metrics"].append(metric.__class__.__name__)
 
 	def fit(self, x, y, epochs=1, shuffle=False, batch_size=1, *args, **kwargs):
-		if not self.__assembled: raise RuntimeError("The model should be assembled before you can train with it.")
+		if not self.__assembled: raise RuntimeError("The model should be assembled before you can train it.")
 		if not self.__built: self.build(x)
 		
 		X_batch = br.nn.preprocessing.split_uneven(x, batch_size)[..., np.newaxis]

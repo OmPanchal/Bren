@@ -57,15 +57,13 @@ class Model(object):
 		self.loss = None
 
 		self.trainable = kwargs.get("params") or []
-		# self.predict = np.vectorize(self.predict, cache=True)
 
 	@property
 	def config(self): return self.__config
-	# @config.setter
-	# def config(self, val): print("nonono")
+	@config.setter
+	def config(self, val): print("nonono")
 
 	def add_config(self, key, value): 
-		print({**self.config, key: value})
 		self.__config.update({**self.config, key: value})
 
 	# actual functionality of the model...

@@ -8,17 +8,17 @@ def one_hot_array(arr):
 
 
 X, Y, X_test, Y_test = br.nn.datasets.load_mnist(dtype="float16")
-print(X.shape)
-print(Y_test)
+# print(X.shape)
+# print(Y_test)
 
 Y = one_hot_array(Y)
 
 
 model = br.nn.models.Sequential(layers=[
     br.nn.layers.Flatten(),
-    br.nn.layers.Dense(2, activation="tanh"),
-    # br.nn.layers.Dense(128, activation="tanh"),
-    # br.nn.layers.Dense(128, activation="tanh"),
+    br.nn.layers.Dense(64, activation="tanh"),
+    br.nn.layers.Dense(128, activation="tanh"),
+    br.nn.layers.Dense(128, activation="tanh"),
     br.nn.layers.Dense(10, activation=br.nn.layers.Softmax())
 ])
 
@@ -29,7 +29,7 @@ model.assemble(
     optimiser=br.nn.optimisers.Adam(learning_rate=0.001)
 )
 
-model.fit(X[0:100], Y[0:100], epochs=1, batch_size=1)
+model.fit(X[0:100], Y[0:100], epochs=100, batch_size=1)
 
 pred = model.predict(X_test[0:10])
 

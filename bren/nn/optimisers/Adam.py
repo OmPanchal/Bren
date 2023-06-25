@@ -19,12 +19,9 @@ class Adam(Optimiser):
 			self.m.append(Constant(0))
 		 
 	def apply_gradients(self, vars, grads, **kwargs):
-		# print(type(vars), type(grads))
-		# print(len(vars), len(grads))
 		if len(self.s) == 0 and len(self.m) == 0:
 			self.initialise(len(vars))
 
-		# print(len(self.m), len(self.s))
 		self.update(vars, grads, self.m, self.s)
 
 	def update(self, var, grad, m, s):

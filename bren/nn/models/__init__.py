@@ -18,7 +18,7 @@ def load_model(filepath):
     model = get_model(data.get("model"))(data.get("layers", []), params=data.get("trainable", []))
     model.assemble(**data)
 
-    return model.__dict__
+    return model
 
 
 __all__ = [Model, Sequential]

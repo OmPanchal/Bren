@@ -1,3 +1,6 @@
 brenv/
 
 pushToMain.bat
+
+main2.py
+mnist_train

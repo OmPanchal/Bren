@@ -16,7 +16,7 @@ Y = one_hot_array(Y)
 
 model = br.nn.models.Sequential(layers=[
     br.nn.layers.Flatten(),
-    br.nn.layers.Dense(64, activation="tanh"),
+    br.nn.layers.Dense(2, activation="tanh"),
     # br.nn.layers.Dense(128, activation="tanh"),
     # br.nn.layers.Dense(128, activation="tanh"),
     br.nn.layers.Dense(10, activation=br.nn.layers.Softmax())

@@ -146,7 +146,7 @@ class Model(object):
 	
 	def save(self, filepath): 
 		with open(filepath, "wb") as f:
-			pickle.dump(self.__config, f)
+			pickle.dump(self.config, f)
 			
 
 #! TRAIN

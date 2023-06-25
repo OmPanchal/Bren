@@ -14,9 +14,12 @@ class Sequential(Model):
             self.add_weight(layer.trainable)
             # ^ have to add the trainable variables to the model so they can be updated..
 
-
     def call(self, x, training=None):
         Z = x
         for layer in self.layers:
             Z = layer(Z, training=training)
         return Z
+    
+    def save(self, filepath):
+        self.add_config("layers", self.layers)
+        return super().save(filepath)

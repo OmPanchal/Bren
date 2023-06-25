@@ -59,6 +59,15 @@ class Model(object):
 		self.trainable = kwargs.get("params") or []
 		# self.predict = np.vectorize(self.predict, cache=True)
 
+	@property
+	def config(self): return self.__config
+	# @config.setter
+	# def config(self, val): print("nonono")
+
+	def add_config(self, key, value): 
+		print({**self.config, key: value})
+		self.__config.update({**self.config, key: value})
+
 	# actual functionality of the model...
 	def call(self, x, training=None): ...
 
@@ -67,7 +76,7 @@ class Model(object):
 		self.call(input[0]) # run forward the network with the first value of the features to builc the weights layers
 	
 	# gets the different attributes such as optimiser 
-	def assemble(self, loss=None, optimiser=None, metrics=None):
+	def assemble(self, loss=None, optimiser=None, metrics=None, **kwargs):
 		self.__assembled = True
 		self.loss = set_loss(loss)
 		self.optimiser = set_optimiser(optimiser)
@@ -75,6 +84,18 @@ class Model(object):
 
 		for metric in metrics:
 			self.metrics.append(set_metric(metric))
+
+		# config is only established after the model has been assembled!
+		self.__config = {
+			"optimiser": self.optimiser.__class__.__name__,
+			"loss": self.loss.__class__.__name__,
+			"trainable": self.trainable,
+			"model": self.__class__.__name__
+		}
+		
+		self.__config["metrics"] = []
+		for metric in self.metrics:
+			self.__config["metrics"].append(metric.__class__.__name__)
 
 	def fit(self, x, y, epochs=1, shuffle=False, batch_size=1, *args, **kwargs):
 		if not self.__assembled: raise RuntimeError("The model should be assembled before you can train with it.")
@@ -123,9 +144,9 @@ class Model(object):
 
 		return np.array(output)
 	
-	def save_weights(self, filepath): 
+	def save(self, filepath): 
 		with open(filepath, "wb") as f:
-			pickle.dump(self.trainable, f)
+			pickle.dump(self.__config, f)
 			
 
 #! TRAIN

@@ -17,10 +17,11 @@ Y = one_hot_array(Y)
 model = br.nn.models.Sequential(layers=[
     br.nn.layers.Flatten(),
     br.nn.layers.Dense(64, activation="tanh"),
-    br.nn.layers.Dense(128, activation="tanh"),
-    br.nn.layers.Dense(128, activation="tanh"),
+    # br.nn.layers.Dense(128, activation="tanh"),
+    # br.nn.layers.Dense(128, activation="tanh"),
     br.nn.layers.Dense(10, activation=br.nn.layers.Softmax())
 ])
+
 
 model.assemble(
     loss=br.nn.losses.CategoricalCrossEntropy,
@@ -28,10 +29,12 @@ model.assemble(
     optimiser=br.nn.optimisers.Adam(learning_rate=0.001)
 )
 
-model.fit(X[0:100], Y[0:100], epochs=100, batch_size=1)
+model.fit(X[0:100], Y[0:100], epochs=1, batch_size=1)
 
 pred = model.predict(X_test[0:10])
 
 
 for i, p in enumerate(pred): 
     print("PRED:", np.argmax(p), "ACT:", Y_test[i].numpy())
+
+model.save("mnist_train")

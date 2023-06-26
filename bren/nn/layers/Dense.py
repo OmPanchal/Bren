@@ -65,7 +65,6 @@ class Dense(Layer):
 
 	def call(self, x):
 		output = (self.weights @ x) + self.bias
-		# print(output.dtype)
 		
 		return self.activation(output)
 

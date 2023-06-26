@@ -69,12 +69,12 @@ class Model(object):
 	# actual functionality of the model...
 	def call(self, x, training=None): ...
 
-	def build(self, input): 
+	def build(self, input):
 		self.__built = True
 		self.call(input[0]) # run forward the network with the first value of the features to builc the weights layers
 	
 	# gets the different attributes such as optimiser 
-	def assemble(self, loss=None, optimiser=None, metrics=None, **kwargs):
+	def assemble(self, loss=None, optimiser=None, metrics=[], **kwargs):
 		self.__assembled = True
 		self.loss = set_loss(loss)
 		self.optimiser = set_optimiser(optimiser)
@@ -97,7 +97,8 @@ class Model(object):
 
 	def fit(self, x, y, epochs=1, shuffle=False, batch_size=1, *args, **kwargs):
 		if not self.__assembled: raise RuntimeError("The model should be assembled before you can train it.")
-		if not self.__built: self.build(x)
+		if not self.__built: 
+			self.build(x)
 		
 		X_batch = br.nn.preprocessing.split_uneven(x, batch_size)[..., np.newaxis]
 		Y_batch = br.nn.preprocessing.split_uneven(y, batch_size)[..., np.newaxis]
@@ -138,11 +139,12 @@ class Model(object):
 	def predict(self, X): 
 		output = []
 		for x in X:
-			output.append(self.call(x[..., np.newaxis]).numpy())
+			output.append(self.call(x[..., np.newaxis], training=False).numpy())
 
 		return np.array(output)
 	
 	def save(self, filepath): 
+		print(self.config)
 		with open(filepath, "wb") as f:
 			pickle.dump(self.config, f)
 			

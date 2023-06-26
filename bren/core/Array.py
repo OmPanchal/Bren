@@ -50,7 +50,7 @@ class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
 	def __next__(self):
 		# print(self._i)
 		if self._idx < len(self._i):
-			x = self._i[self._idx]
+			x = self.__class__(self._i[self._idx], dtype=self.dtype)
 			self._idx += 1
 			return x
 		raise StopIteration

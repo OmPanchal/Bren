@@ -2,5 +2,8 @@ brenv/
 
 pushToMain.bat
 
-main2.py
 mnist_train
+
+main*.py
+
+test_model

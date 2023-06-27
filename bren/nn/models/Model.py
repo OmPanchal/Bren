@@ -4,6 +4,7 @@ from bren.nn.metrics import get_metric
 from bren.nn.losses import get_loss
 from bren.nn.optimisers import get_optimiser
 import pickle
+import os
 
 
 # TODO: Try to impement steps into training
@@ -47,16 +48,20 @@ def set_optimiser(optimiser):
 	return out
 
 class Model(object):
-	def __init__(self, *args, **kwargs) -> None:
+	def __init__(self, **kwargs) -> None:
 		self.training = False
-		self.__assembled = False
-		self.__built = False
+		self.assembled = False
+		self.built = False
 
 		self.optimiser = None
 		self.metrics = []
 		self.loss = None
 
-		self.trainable = kwargs.get("params") or []
+		self.trainable = kwargs.get("trainable") or []
+		# print(self.__dict__)
+		# self.__dict__ = {**self.__dict__,
+		# 	**kwargs.get("config", {})
+		# }
 
 	@property
 	def config(self): return self.__config
@@ -70,12 +75,12 @@ class Model(object):
 	def call(self, x, training=None): ...
 
 	def build(self, input):
-		self.__built = True
+		self.built = True
 		self.call(input[0]) # run forward the network with the first value of the features to builc the weights layers
 	
 	# gets the different attributes such as optimiser 
 	def assemble(self, loss=None, optimiser=None, metrics=[], **kwargs):
-		self.__assembled = True
+		self.assembled = True
 		self.loss = set_loss(loss)
 		self.optimiser = set_optimiser(optimiser)
 		self.metrics.append(set_metric(loss))
@@ -83,21 +88,9 @@ class Model(object):
 		for metric in metrics:
 			self.metrics.append(set_metric(metric))
 
-		# config is only established after the model has been assembled!
-		self.__config = {
-			"optimiser": self.optimiser.__class__.__name__,
-			"loss": self.loss.__class__.__name__,
-			"trainable": self.trainable,
-			"model": self.__class__.__name__
-		}
-		
-		self.__config["metrics"] = []
-		for metric in self.metrics:
-			self.__config["metrics"].append(metric.__class__.__name__)
-
 	def fit(self, x, y, epochs=1, shuffle=False, batch_size=1, *args, **kwargs):
-		if not self.__assembled: raise RuntimeError("The model should be assembled before you can train it.")
-		if not self.__built: 
+		if not self.assembled: raise RuntimeError("The model should be assembled before you can train it.")
+		if not self.built: 
 			self.build(x)
 		
 		X_batch = br.nn.preprocessing.split_uneven(x, batch_size)[..., np.newaxis]
@@ -144,8 +137,20 @@ class Model(object):
 		return np.array(output)
 	
 	def save(self, filepath): 
-		print(self.config)
+		self.__config = {
+			"optimiser": self.optimiser.__class__.__name__,
+			"loss": self.loss.__class__.__name__,
+			"trainable": self.trainable,
+			"model": self.__class__.__name__,
+			"built": self.built,
+		}
+		
+		self.__config["metrics"] = []
+		for metric in self.metrics:
+			self.__config["metrics"].append(metric.__class__.__name__)
+
 		with open(filepath, "wb") as f:
+			print(self.__dict__)
 			pickle.dump(self.config, f)
 			
 

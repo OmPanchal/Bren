@@ -15,10 +15,13 @@ def get_model(name): return MODELS[name]
 def load_model(filepath):
     with open(filepath, "rb") as f:
         data = pickle.load(f)
-    model = get_model(data.get("model"))(data.get("layers", []), params=data.get("trainable", []))
-    model.assemble(**data)
+        print(data)
+    # print("model gotten")
+    # model = get_model(data.get("model"))()
+    # print("assembling model")
+    # model.assemble(**data)
 
-    return model
+    # return model
 
 
 __all__ = [Model, Sequential]

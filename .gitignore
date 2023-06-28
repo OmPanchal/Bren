@@ -8,4 +8,6 @@ main*.py
 
 test_model
 
+push.bat
+
 **/__pycache__

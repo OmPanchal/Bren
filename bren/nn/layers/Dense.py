@@ -59,8 +59,6 @@ class Dense(Layer):
 			self.bias_initialiser(shape=(self.units, 1))() if self.use_bias else 0, dtype="float64")
 
 		print(self.weights.dtype, self.bias.dtype)
-		# print(self.weights.shape)
-		# print(self.bias.shape)
 		return super().build(input_shape, input_dtype, **kwargs)
 
 	def call(self, x):

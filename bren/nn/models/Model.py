@@ -4,7 +4,6 @@ from bren.nn.metrics import get_metric
 from bren.nn.losses import get_loss
 from bren.nn.optimisers import get_optimiser
 import pickle
-import os
 
 
 # TODO: Try to impement steps into training
@@ -53,15 +52,7 @@ class Model(object):
 		self.assembled = False
 		self.built = False
 
-		self.optimiser = None
-		self.metrics = []
-		self.loss = None
-
 		self.trainable = kwargs.get("trainable") or []
-		# print(self.__dict__)
-		# self.__dict__ = {**self.__dict__,
-		# 	**kwargs.get("config", {})
-		# }
 
 	@property
 	def config(self): return self.__config
@@ -80,6 +71,10 @@ class Model(object):
 	
 	# gets the different attributes such as optimiser 
 	def assemble(self, loss=None, optimiser=None, metrics=[], **kwargs):
+		self.optimiser = None
+		self.metrics = []
+		self.loss = None
+
 		self.assembled = True
 		self.loss = set_loss(loss)
 		self.optimiser = set_optimiser(optimiser)
@@ -139,34 +134,17 @@ class Model(object):
 	def save(self, filepath): 
 		self.__config = {
 			"optimiser": self.optimiser.__class__.__name__,
-			"loss": self.loss.__class__.__name__,
-			"trainable": self.trainable,
-			"model": self.__class__.__name__,
-			"built": self.built,
-		}
+			"loss": self.loss.__class__.__name__
+			}
 		
 		self.__config["metrics"] = []
 		for metric in self.metrics:
 			self.__config["metrics"].append(metric.__class__.__name__)
 
+		for key in self.config.keys():
+			try: del self.__dict__[key]
+			except KeyError: ...
+
 		with open(filepath, "wb") as f:
-			print(self.__dict__)
-			pickle.dump(self.config, f)
-			
-
-#! TRAIN
-#* 	BATCH
-#? 		FEATURES
-#? 		FEATURES
-#~	METRIC
-#~	LOSS
-#* 	BATCH
-#? 		FEATURES
-#? 		FEATURES
-#~	METRIC
-#~	LOSS
-
-
-# FORWARD --> [p1, p2, p3,...] 
-
-# (DATASET, BATCH, FEATURES, ...)
+			pickle.dump(self, f)
+		

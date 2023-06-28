@@ -14,14 +14,11 @@ def get_model(name): return MODELS[name]
 
 def load_model(filepath):
     with open(filepath, "rb") as f:
-        data = pickle.load(f)
-        print(data)
-    # print("model gotten")
-    # model = get_model(data.get("model"))()
-    # print("assembling model")
-    # model.assemble(**data)
+        model = pickle.load(f)
 
-    # return model
+    model.assemble(**model.config)
+
+    return model
 
 
 __all__ = [Model, Sequential]

@@ -1,6 +1,6 @@
 brenv/
 
-pushToMain.bat
+push.bat
 
 mnist_train
 

@@ -6,9 +6,6 @@ from bren.nn.optimisers import get_optimiser
 import pickle
 
 
-# TODO: Try to impement steps into training
-
-
 def set_metric(metric):
 	out = None
 

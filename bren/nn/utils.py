@@ -16,3 +16,16 @@ class AliasDict(dict):
 
 def progress_bar(metrics):
 	...
+
+
+def rename_key(dictionary, k_old, k_new):
+	# print(dictionary)
+	pos = list(dictionary.keys()).index(k_old)
+	value = (k_new, dictionary[k_old])
+	dictionary.pop(k_old)
+
+	items = list(dictionary.items())
+	items.insert(pos, value)
+
+	return dict(items)
+

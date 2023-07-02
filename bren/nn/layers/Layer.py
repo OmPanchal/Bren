@@ -1,4 +1,5 @@
 from bren import Variable
+from bren.nn.utils import rename_key
 
 
 class Layer(object):
@@ -35,3 +36,12 @@ class Layer(object):
 		return self.trainable
 
 	def set_name(self, cls): return f"{cls.__name__}/{cls.count}"
+
+	def set_config(self, dictionary): self.__dict__ = dictionary 
+
+	def config(self) -> dict:
+		if "layer" in self.__dict__.keys():
+			raise AttributeError(f"The attribute 'layer' is reserved for the model's internals, please change the attribute name")
+
+		self.__dict__ = {"layer": self.__class__.__name__, **self.__dict__}
+		return {"layer": self.__class__.__name__, **self.__dict__}

@@ -22,8 +22,8 @@ class Sequential(Model):
         return Z
     
     def save(self, filepath):
-        # for layer in self.layers:
-        #     print(layer)
-        #     if layer.__class__ not in br.nn.__all__: raise ValueError("custom layers cannot be saved.")
-        # self.add_config("layers", self.layers)
+        # Serialise the layers before doing the standard save....
+        for i, layer in enumerate(self.layers):
+            self.layers[i] = layer.config()
+
         return super().save(filepath)

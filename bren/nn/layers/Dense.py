@@ -1,14 +1,15 @@
 from bren.nn.layers import Layer
 from bren.nn.initialisers import get_initialiser, Initialiser, initialiser_from_func
 from bren.nn.activations import get_activation
+from bren.nn.utils import rename_key
 
 
 def set_activation(activation):
 	out = None
 
 	if type(activation) == str or activation is None: 
-		out = get_activation(activation)()
-	elif issubclass(type(activation), Layer) or type(activation).__name__ == function.__name__:
+		out = get_activation(activation)
+	elif issubclass(type(activation), Layer) or type(activation).__name__ == "function":
 		out = activation
 	else: raise AttributeError(f"{activation} is of invalid type for activation")
 
@@ -21,7 +22,7 @@ def set_initialiser(initialiser):
 		out = get_initialiser(initialiser)
 	elif issubclass(type(initialiser), Initialiser):
 		out = initialiser 
-	elif type(initialiser).__name__ == function.__name__:
+	elif type(initialiser).__name__ == "function":
 		out = initialiser_from_func(initialiser)
 	else: raise AttributeError(f"{initialiser} is of invalid type for initialisers")
 
@@ -38,8 +39,11 @@ class Dense(Layer):
 		super().__init__(name, **kwargs)
 
 		self._units = units
+		# print(activation)
 		self.activation = set_activation(activation)
 
+		# print(bias_initialiser)
+		# print(weights_initialiser)
 		self.weights_initialiser = set_initialiser(weights_initialiser)
 		self.bias_initialiser = set_initialiser(bias_initialiser)
 
@@ -53,18 +57,26 @@ class Dense(Layer):
 	def build(self, input_shape, input_dtype, **kwargs):
 	
 		self.weights = self.add_weight(
-			self.weights_initialiser(shape=(self.units, input_shape[0]))(), dtype="float64") 
+			self.weights_initialiser(shape=(self.units, input_shape[0]))(), dtype=input_dtype) 
 
 		self.bias = self.add_weight(
-			self.bias_initialiser(shape=(self.units, 1))() if self.use_bias else 0, dtype="float64")
+			self.bias_initialiser(shape=(self.units, 1))() if self.use_bias else 0, dtype=input_dtype)
 
-		print(self.weights.dtype, self.bias.dtype)
+		# print(self.weights.dtype, self.bias.dtype)
 		return super().build(input_shape, input_dtype, **kwargs)
 
 	def call(self, x):
+		activation = self.activation()
 		output = (self.weights @ x) + self.bias
 		
-		return self.activation(output)
+		return activation(output)
+	
+	def config(self):
+		self.set_config(rename_key(super().config(), "_units", "units"))
+		self.__dict__["bias_initialiser"] = self.bias_initialiser.__name__
+		self.__dict__["weights_initialiser"] = self.weights_initialiser.__name__
+		self.__dict__["activation"] = self.activation.__name__
+		return self.__dict__
 
 # aliases
 FullyConnected = Dense

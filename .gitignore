@@ -1,0 +1,13 @@
+brenv/
+
+push.bat
+
+mnist_train
+
+main*.py
+
+test_model
+
+**/__pycache__
+
+AddLayer.py

@@ -1,10 +1,11 @@
 from bren.nn.models import Model
 import numpy as np
+import bren as br
 
 
 class Sequential(Model):
-    def __init__(self, layers, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def __init__(self, layers, **kwargs) -> None:
+        super().__init__(**kwargs)
         self.layers = layers
 
     def build(self, input):
@@ -21,5 +22,8 @@ class Sequential(Model):
         return Z
     
     def save(self, filepath):
-        self.add_config("layers", self.layers)
+        # Serialise the layers before doing the standard save....
+        for i, layer in enumerate(self.layers):
+            self.layers[i] = layer.config()
+
         return super().save(filepath)

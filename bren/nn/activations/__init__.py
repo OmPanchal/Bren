@@ -3,9 +3,10 @@ from bren.nn.activations.ReLU import ReLU
 from bren.nn.activations.ELU import ELU
 from bren.nn.activations.Linear import Linear
 from bren.nn.utils import AliasDict
+from bren.nn.activations.Activation import Activation
 
 
-__all__ = [Tanh, ReLU, ELU]
+__all__ = [Tanh, ReLU, ELU, Activation]
 
 
 ACTIVATIONS = AliasDict({ None: Linear })

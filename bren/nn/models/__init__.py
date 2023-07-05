@@ -1,6 +1,7 @@
 from bren.nn.models.Model import Model
 from bren.nn.models.Sequential import Sequential
 from bren.nn.utils import AliasDict
+from bren.nn.layers import __all__ as layers
 import pickle
 
 
@@ -12,11 +13,21 @@ MODELS = AliasDict({
 def get_model(name): return MODELS[name]
 
 
-def load_model(filepath):
+def load_model(filepath, custom_objects={}):
+    OBJECTS = {**custom_objects}
+    for layer in layers: OBJECTS[layer.__name__] = layer
+
     with open(filepath, "rb") as f:
-        data = pickle.load(f)
-    model = get_model(data.get("model"))(data.get("layers", []), params=data.get("trainable", []))
-    model.assemble(**data)
+        model = pickle.load(f)
+
+    print(model.layers)
+
+    for i, layer in enumerate(model.layers):
+        L = OBJECTS[layer["layer"]](**layer, custom_obs=OBJECTS, params=layer.get("trainable", []))
+        model.layers[i] = L
+        model.layers[i].set_built(True)
+
+    model.assemble(**model.config)
 
     return model
 

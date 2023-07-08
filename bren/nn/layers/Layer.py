@@ -7,19 +7,24 @@ class Layer(object):
 
 	def __init__(self, name=None, **kwargs) -> None:
 		self.custom_objs = kwargs.get("custom_obs")
-		self.trainable = kwargs.get("params", [])
+		self.trainable = kwargs.get("params", {})
 		self.name = name or self.set_name(Layer)
 		self.built = False
 		Layer.count += 1
 
 	def __call__(self, inp, training=None, **kwargs): 
+		# print(self.name, self.__class__, self.built)
 		if not self.built:
+			# print("This was called")
 			self.build(input_shape=inp.shape, input_dtype=inp.dtype)
 		return self.call(inp)
 		 
 	def __delattr__(self, __name) -> None: ...
 	
 	def build(self, input_shape, input_dtype, **kwargs):
+		for key, value in zip(self.__dict__.keys(), self.__dict__.values()):
+			if type(value) is Variable: self.trainable[key] = value
+		
 		self.built = True
 
 	def set_built(self, bool): self.built = bool
@@ -28,8 +33,8 @@ class Layer(object):
 
 	def add_weight(self, val, **kwargs):
 		var = Variable(val, **kwargs)
+		# self.trainable.append(var)
 		# if kwargs.get("trainable") is not False: self.trainable.append(var)
-		self.trainable.append(var)
 		return var
 
 	def set_weights(self, params):

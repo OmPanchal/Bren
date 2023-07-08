@@ -2,6 +2,7 @@ import numpy as np
 from bren.autodiff.nodes import (Operator, Graph)
 import inspect
 
+
 np.seterr(invalid="ignore", divide="ignore")
 
 OPS = {}
@@ -23,7 +24,7 @@ def custom(grad, funcname=None):
 def custom_gradient(grad):
 	def decorator(func):
 		OPS[func.__name__ + " (vectorized)"] = custom(grad)
-		return np.frompyfunc(func, nin=len(inspect.getargspec(func).args), nout=1)
+		return np.frompyfunc(func, nin=inspect.signature(func).parameters.__len__(), nout=1)
 
 	return decorator 
 

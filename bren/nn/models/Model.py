@@ -50,6 +50,7 @@ class Model(object):
 		self.built = False
 
 		self.trainable = kwargs.get("trainable") or []
+		self.params = []
 
 	@property
 	def config(self): return self.__config
@@ -63,6 +64,7 @@ class Model(object):
 	def call(self, x, training=None): ...
 
 	def build(self, input):
+		# print("MODEL BUILD CALLED")
 		self.built = True
 		self.call(input[0]) # run forward the network with the first value of the features to builc the weights layers
 	
@@ -85,10 +87,12 @@ class Model(object):
 		if not self.built: 
 			self.build(x)
 		
+		for params in self.trainable: self.params.extend(params.values())
+
 		X_batch = br.nn.preprocessing.split_uneven(x, batch_size)[..., np.newaxis]
 		Y_batch = br.nn.preprocessing.split_uneven(y, batch_size)[..., np.newaxis]
 
-		if shuffle: br.nn.preprocessing.shuffle(X_batch, Y_batch)
+		if shuffle: br.nn.preprocessing.shuffle(Y_batch)
 
 		for i in range(1, epochs + 1):
 			self.__train_batch(X_batch, Y_batch)
@@ -99,9 +103,9 @@ class Model(object):
 				print(metric.__class__.__name__, ":", metric.result().numpy(), end=" - ")
 				metric.reset()
 			print()
-
+		
 	def add_weight(self, val, **kwargs):
-		self.trainable.extend(val)
+		self.trainable.append(val)
 
 	def __forward_update(self, X, Y, training=None):
 		loss = []
@@ -118,8 +122,9 @@ class Model(object):
 		for x, y in zip(X_batches, Y_batches):
 			with br.Graph() as g:
 				loss = self.__forward_update(x, y, training=True)
-				grad = g.grad(loss, self.trainable)
-				self.optimiser.apply_gradients(self.trainable, grad)
+				
+				grad = g.grad(loss, self.params)
+				self.optimiser.apply_gradients(self.params, grad)
 		
 	def predict(self, X): 
 		output = []

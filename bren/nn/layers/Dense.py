@@ -10,7 +10,7 @@ def set_activation(activation, custom_obs={}):
 	if type(activation) == str or activation is None: 
 		try: out = get_activation(activation)()
 		except KeyError:
-			try: out = custom_obs[activation]
+			try: out = set_activation(custom_obs[activation])
 			except KeyError:
 				raise KeyError(f"custom object {activation} cannot be found") 
 			
@@ -59,7 +59,6 @@ class Dense(Layer):
 	def units(self, value): ...
 
 	def build(self, input_shape, input_dtype, **kwargs):
-	
 		self.weights = self.add_weight(
 			self.weights_initialiser(shape=(self.units, input_shape[0]))(), dtype=input_dtype) 
 
@@ -78,7 +77,7 @@ class Dense(Layer):
 		self.set_config(rename_key(super().config(), "_units", "units"))
 		self.__dict__["bias_initialiser"] = self.bias_initialiser.__name__
 		self.__dict__["weights_initialiser"] = self.weights_initialiser.__name__
-		self.__dict__["activation"] = self.activation.func.__name__
+		self.__dict__["activation"] = self.activation.__class__.__name__
 		return self.__dict__
 
 # aliases

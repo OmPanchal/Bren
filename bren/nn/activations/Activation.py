@@ -6,11 +6,12 @@ class Activation(Layer):
 		self.func = func
 		super().__init__(name, **kwargs)
 		self.set_built(True)
+		self.__class__.__name__ = func.__name__
 
 	def call(self, inp, training=None, **kwargs):
 		return self.func(inp)
 
-	def build(self, input_shape, input_dtype, **kwargs): ...
+	# def build(self, input_shape, input_dtype, **kwargs): ...
 
 # def activation_from_func(func):
 # 	class Activation(Layer):

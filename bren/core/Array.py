@@ -4,6 +4,8 @@ from bren.autodiff.operations.ops import OPS
 import typing
 
 
+# np.seterr(all="ignore")
+
 def make_ops_source(name, **kwargs):
 	try: 
 		if Graph._g: return OPS.get(name, OPS["nongrad"])(**kwargs)
@@ -50,7 +52,7 @@ class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
 	def __next__(self):
 		# print(self._i)
 		if self._idx < len(self._i):
-			x = self.__class__(self._i[self._idx], dtype=self.dtype)
+			x = self._i[self._idx]
 			self._idx += 1
 			return x
 		raise StopIteration
@@ -64,7 +66,6 @@ class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
 		return self.__class__(val, dtype=self.dtype, source=source)
 
 	def __array_ufunc__(self, ufunc, method, *inps, **kwargs):
-		# print(ufunc)
 		if method == "__call__":
 			scalars, sources = self.__set_source_scalar(inps)
 

@@ -4,9 +4,10 @@ from bren.nn.activations.ELU import ELU
 from bren.nn.activations.Linear import Linear
 from bren.nn.utils import AliasDict
 from bren.nn.activations.Activation import Activation
+from bren.nn.layers.Softmax import Softmax
 
 
-__all__ = [Tanh, ReLU, ELU, Activation]
+__all__ = [Tanh, ReLU, ELU, Activation, Softmax]
 
 
 ACTIVATIONS = AliasDict({ None: Linear })

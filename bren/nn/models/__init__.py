@@ -19,16 +19,24 @@ def load_model(filepath, custom_objects={}):
 
     with open(filepath, "rb") as f:
         model = pickle.load(f)
+        # print(model.layers)
 
-    print(model.layers)
+    model_layers = model.layers
 
     for i, layer in enumerate(model.layers):
-        L = OBJECTS[layer["layer"]](**layer, custom_obs=OBJECTS, params=layer.get("trainable", []))
-        model.layers[i] = L
-        model.layers[i].set_built(True)
+        L = OBJECTS[layer["layer"]](**layer, custom_obs=custom_objects, params=layer.get("trainable", []))
+        # print(L.activation)
+        model_layers[i] = L
+        model_layers[i].set_built(True)
+        try: model_layers[i].activation.set_built(True)
+        except AttributeError: pass 
+        model_layers[i].__dict__ = {**model_layers[i].__dict__, **layer["trainable"]} 
+        # print("\n\n", L.__dict__)
 
+    # for layer in model.layers:
+    #     print(layer.built)
     model.assemble(**model.config)
-
+    
     return model
 
 

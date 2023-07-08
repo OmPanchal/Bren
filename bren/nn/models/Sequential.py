@@ -12,12 +12,15 @@ class Sequential(Model):
         super().build(input)
         
         for layer in self.layers:
+            # print("HERE", layer.trainable)
             self.add_weight(layer.trainable)
             # ^ have to add the trainable variables to the model so they can be updated..
 
     def call(self, x, training=None):
+        # print("Calling")
         Z = x
         for layer in self.layers:
+            # print(layer.built)
             Z = layer(Z, training=training)
         return Z
     

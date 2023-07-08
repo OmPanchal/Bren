@@ -8,6 +8,12 @@ main*.py
 
 test_model
 
+<<<<<<< HEAD
+push.bat
+
+**/__pycache__
+=======
 **/__pycache__
 
 AddLayer.py
+>>>>>>> 26a9e4d3e84a7af3e8a58f2a7d2ea4d0eb444b2e

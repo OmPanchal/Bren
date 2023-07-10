@@ -28,6 +28,4 @@ model.fit(X, Y, epochs=1000, batch_size=1, shuffle=True)
 out = model.predict(X)
 print(out)
 
-
-# print(model.trainable[0])
 model.save("test_model")

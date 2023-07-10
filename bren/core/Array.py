@@ -4,8 +4,6 @@ from bren.autodiff.operations.ops import OPS
 import typing
 
 
-# np.seterr(all="ignore")
-
 def make_ops_source(name, **kwargs):
 	try: 
 		if Graph._g: return OPS.get(name, OPS["nongrad"])(**kwargs)
@@ -50,7 +48,6 @@ class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
 		return self
 	
 	def __next__(self):
-		# print(self._i)
 		if self._idx < len(self._i):
 			x = self._i[self._idx]
 			self._idx += 1
@@ -108,6 +105,10 @@ class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
 	def numpy(self, dtype=None): return self._i.astype(dtype or self.dtype)
 
 	def flatten(self): return self._i.flatten()
+
+	def astype(self, dtype): 
+		self.dtype = dtype
+		return self
 
 	@property
 	def T(self): return np.transpose(self)

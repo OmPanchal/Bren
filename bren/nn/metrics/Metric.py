@@ -15,7 +15,6 @@ class Metric(object):
 
 	def add_weight(self, val, **kwargs):
 		var = Variable(val, **kwargs)
-		# if kwargs.get("trainable") is not False: self.trainable.append(var)
 		self.variables.append(var)
 		return var
 	

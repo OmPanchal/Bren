@@ -11,8 +11,8 @@ def one_hot_array(arr):
     unique = np.unique(arr)
     return br.Variable(np.eye(unique.size)[arr.flatten().astype("int")])
 
-batch = X_test.numpy()
-labels = Y_test.numpy()
+batch = X.numpy()[100:]
+labels = Y.numpy()[100:]
 one_hot_labels = one_hot_array(labels)
 
 running = True
@@ -24,8 +24,6 @@ while running:
 		continue
 	else: randidx = int(randidx)
 
-	# print(batch[randidx])
-	# input_value = np.reshape(batch[randidx], newshape=(28, 28))
 	predicted_values = model.predict([batch[randidx]])
 	argmax_predicted = np.argmax(predicted_values)
 	classes = np.unique(labels)
@@ -34,10 +32,8 @@ while running:
 
 	fig, axes = plt.subplots(nrows=2, ncols=1)
 
-	# change the colour depending on the predicted output
 	colour = np.repeat("b", predicted_values.size)
 
-	# print(labels[randidx])
 	if argmax_predicted == labels[randidx]: colour[argmax_predicted] = "g"
 	if argmax_predicted != labels[randidx]: 
 			colour[int(argmax_predicted)] = "r"

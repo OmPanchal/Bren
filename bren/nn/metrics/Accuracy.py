@@ -11,7 +11,6 @@ class Accuracy(Metric):
 
 	def update(self, y_pred, y_true, weights=None, **kwargs):
 		acc = np.sum(y_true == np.round(y_pred, decimals=self.leniency)) / len(y_true)
-		# print(y_pred, y_true)
 		self.total.assign_add(acc)
 		self.count.assign_add(1)
 

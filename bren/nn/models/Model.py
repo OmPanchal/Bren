@@ -64,9 +64,8 @@ class Model(object):
 	def call(self, x, training=None): ...
 
 	def build(self, input):
-		# print("MODEL BUILD CALLED")
 		self.built = True
-		self.call(input[0]) # run forward the network with the first value of the features to builc the weights layers
+		self.call(input[0]) 
 	
 	# gets the different attributes such as optimiser 
 	def assemble(self, loss=None, optimiser=None, metrics=[], **kwargs):

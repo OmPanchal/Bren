@@ -26,7 +26,7 @@ model.assemble(
     optimiser=br.nn.optimisers.Adam(learning_rate=0.001)
 )
 
-model.fit(X[0:1000], Y[0:1000], epochs=100, batch_size=10)
+model.fit(X[0:100], Y[0:100], epochs=100, batch_size=5)
 
 pred = model.predict(X[0:20])
 

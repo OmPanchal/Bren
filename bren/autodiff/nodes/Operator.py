@@ -12,7 +12,6 @@ class Operator(nodes.Node):
 		super().__init__(value, name)
 
 	def __call__(self, dout): 
-		# reset the gradient
 		self.gradient = 0
 		return self.grad(*self.scalars, dout=dout, value=self.value)
 

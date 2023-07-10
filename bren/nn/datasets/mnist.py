@@ -3,7 +3,6 @@ import requests, gzip, os, pathlib
 from bren import Variable
 
 
-#fetch data
 path = os.path.join(pathlib.Path().resolve(), "bren\\nn\\datasets\\data")
 
 def fetch(url):
@@ -19,9 +18,9 @@ def fetch(url):
 
 
 def load_mnist(dtype="float64"):
-	X = fetch("http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz")[0x10:].reshape((-1, 28, 28))
-	Y = fetch("http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz")[8:]
-	X_test = fetch("http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz")[0x10:].reshape((-1, 28, 28))
+	X = fetch("http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz")[0x10:].reshape((-1, 28, 28)) / 255.
+	Y = fetch("http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz")[8:] 
+	X_test = fetch("http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz")[0x10:].reshape((-1, 28, 28)) / 255.
 	Y_test = fetch("http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz")[8:]
 	return (Variable(X, dtype=dtype), Variable(Y, dtype=dtype), 
          Variable(X_test, dtype=dtype), Variable(Y_test, dtype=dtype))

@@ -22,7 +22,7 @@ def set_activation(activation, custom_obs={}):
 
 	return out
 
-def set_initialiser(initialiser, custom_obs={}):
+def set_initialiser(initialiser):
 	out = None
 
 	if type(initialiser) == str:
@@ -48,8 +48,8 @@ class Dense(Layer):
 		self._units = units
 		self.activation = set_activation(activation, self.custom_objs)
 
-		self.weights_initialiser = set_initialiser(weights_initialiser, self.custom_objs)
-		self.bias_initialiser = set_initialiser(bias_initialiser, self.custom_objs)
+		self.weights_initialiser = set_initialiser(weights_initialiser)
+		self.bias_initialiser = set_initialiser(bias_initialiser)
 
 		self.use_bias = use_bias
 
@@ -65,7 +65,6 @@ class Dense(Layer):
 		self.bias = self.add_weight(
 			self.bias_initialiser(shape=(self.units, 1))() if self.use_bias else 0, dtype=input_dtype)
 
-		# print(self.weights.dtype, self.bias.dtype)
 		return super().build(input_shape, input_dtype, **kwargs)
 
 	def call(self, x):

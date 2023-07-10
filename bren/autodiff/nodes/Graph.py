@@ -39,7 +39,6 @@ class Graph(object):
 
 		for x in dx:
 			x._source.gradient = 0 
-		# ^ Reset the gradients for the variables involved ...
 
 		for operation in op:
 			try:

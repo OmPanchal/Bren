@@ -14,7 +14,7 @@ class AdaGrad(Optimiser):
 		for _ in range(len): self.s.append(Constant(0))
 
 	def apply_gradients(self, vars, grads, **kwargs):
-		if len(self.s) == 0: self.initialise(len(vars)) # might want to emply a better method than having a condition in a repeatedly called function
+		if len(self.s) == 0: self.initialise(len(vars))
 		self.update(vars, grads, self.s)
 
 	def update(self, var, grad, s):

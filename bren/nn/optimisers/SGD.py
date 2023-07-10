@@ -14,7 +14,6 @@ class SGD(Optimiser):
 
 	def apply_gradients(self, vars, grads, **kwargs): 
 		if len(self.momentum) == 0: self.initialise(len(vars))
-		# print(vars, grads, self.momentum, end="\n\n")
 		self.update(vars, grads, self.momentum)
 
 	def update(self, var, grad, momentum): 

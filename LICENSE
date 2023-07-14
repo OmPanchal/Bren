@@ -69,3 +69,5 @@ CONTRIBUTION AGREEMENT
 By contributing to the BVLC/caffe repository through pull-request, comment,
 or otherwise, the contributor releases their content to the
 license and copyright terms herein.
+
+## With bren's code structure being derived from the tensorflow.keras API To comply with Tensorflow and Keras's Redistribution policies as mentioned in their LICENCEs (Apache License 2.0 Section 4), the respective copies of the licences are located at "https://github.com/OmPanchal/Bren/tree/main/bren"

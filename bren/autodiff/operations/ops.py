@@ -22,6 +22,15 @@ def custom(grad, funcname=None):
 
 
 def custom_gradient(grad):
+	"""
+	A decorator which maps a custom gradient to a function.
+	[NOTE] This is advised for functions which perform logical operations.
+	
+	Parameters 
+	----------
+	grad: The gradient of the function which is being decorated.
+
+	"""
 	def decorator(func):
 		OPS[func.__name__ + " (vectorized)"] = custom(grad)
 		return np.frompyfunc(func, nin=inspect.signature(func).parameters.__len__(), nout=1)

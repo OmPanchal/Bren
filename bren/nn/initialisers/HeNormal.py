@@ -3,6 +3,10 @@ from bren.nn.initialisers.Initialiser import Initialiser
 
 
 class HeNormal(Initialiser):
+	"""
+	Returns values taken from a normal distribution with mean 0 and a stddev of `sqrt(2 / (fan_in))` where `fan_in` is a the number of inputs 
+	"""
+
 	def __init__(self, shape, dtype="float32", **kwargs) -> None:
 		super().__init__(shape, dtype, **kwargs)
 

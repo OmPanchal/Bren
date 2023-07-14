@@ -4,6 +4,11 @@ import bren as br
 
 
 class Graph(object):
+
+	"""
+	The Graph object helps keep track of all of the operations performed on a Variable object. In doing so, it performs a backward pass and computes the gradients of all of the Variables involved in the computation graph. 
+	"""
+
 	_g = None
 
 	def __init__(self) -> None:
@@ -57,4 +62,7 @@ class Graph(object):
 			yield br.Constant(value._source.gradient, dtype=value.dtype)
 
 	def grad(self, dy, dx): 
+		"""
+		Performs a backward pass and returns a list of 
+		"""
 		return list(self.__g(dy, dx))

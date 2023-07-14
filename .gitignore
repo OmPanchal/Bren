@@ -13,3 +13,6 @@ push.bat
 AddLayer.py
 
 mnist_train
+
+.vscode/
+.vs/

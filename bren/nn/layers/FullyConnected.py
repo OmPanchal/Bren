@@ -36,7 +36,22 @@ def set_initialiser(initialiser):
 	return out
 	
 
-class Dense(Layer):
+class FullyConnected(Layer):
+
+	"""
+	The `FullyConnected` layer returns a layer with a specified amount of `units` where each unit is conceptually connected to every other unit in the previous layer.
+
+	Parameters
+	----------
+	units (`int`): The number of units for the layer.
+	activation (`str`, `Activation`, `function`): the activation function for the layer. After the weights and biases have been applied to the inputs, the result will then be passed through the specified activation function. By default, this is set to `None` which is equivalent to the `Linear` activation function.
+	weights	 
+	weights_initialiser (`str`, `Initialiser`, `function`): The initialiser function of the weights.
+	bias_initialiser (`str`, `Initialiser`, `function`): The initialiser function of the biases.
+	use_bias (`bool`): Determines the inclusion of the bias.
+	name ("str"): the name of the `FullyConnected` Layer.
+	"""
+
 	def __init__(self, units, 
 						activation=None, 
 						weights_initialiser="GlorotUniform", 
@@ -80,5 +95,5 @@ class Dense(Layer):
 		return self.__dict__
 
 # aliases
-FullyConnected = Dense
-FC = Dense
+FC = FullyConnected
+Dense = FullyConnected

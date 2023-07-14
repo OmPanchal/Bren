@@ -12,7 +12,7 @@ def make_ops_source(name, **kwargs):
 		raise RuntimeError(f"no gradient found for operation {name}")
 
 
-class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
+class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):	
 	def __init__(self, value, dtype="float32", name=None, **kwargs) -> None:
 		self.dtype = dtype
 		if issubclass(type(value), Array):
@@ -88,30 +88,94 @@ class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
 		return scalars, sources
 
 	def append(self, values, **kwargs):
+		"""
+		Inserts values at the end of the array.
+		
+		Parameters
+		----------
+		value: value to be added
+		"""
 		self._i = np.append(self._i, values, *kwargs)
 
 	def assign(self, value):
+		"""
+		Reassigns the array's value. Does not return a clone of the array.
+
+		Parameters
+		----------
+		value: value to be assigned to the array
+
+		Returns
+		-------
+		Returns the numpy array which is held in the array
+		"""
 		if issubclass(type(value), Array): value = value._i
 		self._i = value
 		self._source.value = self._i
 
 		return self._i
 
-	def assign_add(self, value): return self.assign(self._i + value)
-	def assign_sub(self, value): return self.assign(self._i - value)
+	def assign_add(self, value): 
+		"""
+		Adds and assigns the result to the array.
 
-	def clone(self): return self.__class__(self._i, self.dtype, self.name)
+		Parameters
+		----------
+		value: value to be added
 
-	def numpy(self, dtype=None): return self._i.astype(dtype or self.dtype)
+		Returns
+		-------
+		Returns the numpy array which is held in the array
+		"""
+		return self.assign(self._i + value)
+	
+	def assign_sub(self, value): 
+		"""
+		Subtracts and assigns the result to the array.
 
-	def flatten(self): return self._i.flatten()
+		Parameters
+		----------
+		value: value to be subtracted
+
+		Returns
+		-------
+		Returns the numpy array which is held in the array
+		"""
+		return self.assign(self._i - value)
+
+	def clone(self): 
+		"""
+		Returns a clone of the array.
+		
+		[NOTE] any built up computation graphs from the origional array will be discarded.
+		"""
+		return self.__class__(self._i, self.dtype, self.name)
+
+	def numpy(self, dtype=None): 
+		"""
+		Returns a numpy array of the value
+		"""
+		return self._i.astype(dtype or self.dtype)
+
+	def flatten(self): 
+		"""
+		Returns a 1D version of the array
+		"""
+		return self._i.flatten()
 
 	def astype(self, dtype): 
+		"""
+		Changes the data type of the array and returns the array itsef.
+		"""
 		self.dtype = dtype
 		return self
 
 	@property
-	def T(self): return np.transpose(self)
+	def T(self): 
+		"""
+		Returns the transposed version of the array.
+		"""
+		return np.transpose(self)
 	@T.setter
 	def T(self): ...
 

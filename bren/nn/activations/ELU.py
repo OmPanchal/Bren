@@ -11,6 +11,17 @@ def elu(a, alpha):
 
 
 class ELU(Layer):
+	"""
+	Perform the ELU activation function on the input. 
+	For input values greater than 1 the output will be linear (`x`), while negative values will be computed as `alpha * np.exp(x) - 1` with the alpha hyperparameter determining what negative value the function approches for more and more negative values of the inputs.
+
+	Paratmeters
+	-----------
+	alpha (`float`): Hyperparameter which determines the negative value which the funcion approached for more and more negative value of x
+	x (`br.Variable`): The input Array.
+	name (`str`): The name of the activation.
+	"""
+
 	def __init__(self, alpha=1, name=None, **kwargs) -> None:
 		self.alpha = alpha
 		super().__init__(name, **kwargs)

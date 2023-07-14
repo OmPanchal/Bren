@@ -1,4 +1,7 @@
 class Initialiser(object):
+	"""
+	The base Initialiser class
+	"""
 	def __init__(self, shape, dtype="float64", **kwargs) -> None:
 		self.shape = shape
 		self.dtype = dtype
@@ -10,6 +13,13 @@ class Initialiser(object):
 
 
 def initialiser_from_func(func):
+	"""
+	Used to produce an Initialiser class with a custom function
+
+	Parameters
+	----------
+	func (`function`): the intitalisation function
+	"""
 	class Initialiser(object):
 		def __init__(self, shape, dtype="float64", **kwargs) -> None:
 			self.shape = shape

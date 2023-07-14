@@ -3,6 +3,14 @@ from bren.nn.utils import rename_key
 
 
 class Layer(object):
+	"""
+	The base `Layer` class.
+
+	Parameters
+	----------
+	name (`str`): The name of the layer.
+	"""
+
 	count = 0
 
 	def __init__(self, name=None, **kwargs) -> None:

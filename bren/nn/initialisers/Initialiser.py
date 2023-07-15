@@ -2,7 +2,7 @@ class Initialiser(object):
 	"""
 	The base Initialiser class
 	"""
-	def __init__(self, shape, dtype="float64", **kwargs) -> None:
+	def __init__(self, shape, dtype="float32", **kwargs) -> None:
 		self.shape = shape
 		self.dtype = dtype
 
@@ -29,7 +29,7 @@ def initialiser_from_func(func):
 	func (`function`): the intitalisation function
 	"""
 	class Initialiser(object):
-		def __init__(self, shape, dtype="float64", **kwargs) -> None:
+		def __init__(self, shape, dtype="float32", **kwargs) -> None:
 			self.shape = shape
 			self.dtype = dtype
 

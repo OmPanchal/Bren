@@ -19,6 +19,20 @@ def progress_bar(metrics):
 
 
 def rename_key(dictionary, k_old, k_new):
+	"""
+	Renames the key in a dictionary without editting its position.
+
+	Parameters
+	----------
+	dictionary (`dict`): The dictionary to be editted.
+	k_old (`str`): The old key name.
+	k_new (`str`): The new key name.
+
+	Returns
+	-------
+	Returns a new dictionary with the renamed key name
+	"""
+
 	pos = list(dictionary.keys()).index(k_old)
 	value = (k_new, dictionary[k_old])
 	dictionary.pop(k_old)

@@ -44,6 +44,10 @@ def set_optimiser(optimiser):
 	return out
 
 class Model(object):
+	"""
+	The base `Model` class
+	"""
+
 	def __init__(self, **kwargs) -> None:
 		self.training = False
 		self.assembled = False
@@ -55,20 +59,52 @@ class Model(object):
 	@property
 	def config(self): return self.__config
 	@config.setter
-	def config(self, val): print("nonono")
+	def config(self, val): ...
 
 	def add_config(self, key, value): 
+		"""
+		Adds a key value pair to the config
+
+		Parameters
+		----------
+		key: The key
+		value: The value
+		"""
 		self.__config.update({**self.config, key: value})
 
-	# actual functionality of the model...
-	def call(self, x, training=None): ...
+	def call(self, x, training=None):
+		"""
+		Where the functionality of the model takes place.
+
+		Parameters
+		----------
+		x (`br.Variable`): the inputs 
+		training (`bool`): A boolean value which is passed to the layers which specifies if the model is training or not
+		"""
+		...
 
 	def build(self, input):
+		"""
+		Builds the model. Performs one forward pass with the first value in the training data.
+
+		Parameters
+		----------
+		input (`br.Variable`): the inputs to the model,
+		"""
 		self.built = True
 		self.call(input[0]) 
 	
-	# gets the different attributes such as optimiser 
 	def assemble(self, loss=None, optimiser=None, metrics=[], **kwargs):
+		"""
+		Establishes the loss function, the optimiser and the metrics of the model (the loss function is by default added to the metrics).
+
+		Parameters
+		----------
+		loss (`str`, `function`, `br.nn.losses.Loss`): The loss function of the model
+		optimiser (`str`, `br.nn.optimisers.Optimiser`): The optimiser of the model
+		metrics (`list`): A list of all of the metrics which you want to be displayed
+		"""
+
 		self.optimiser = None
 		self.metrics = []
 		self.loss = None
@@ -82,6 +118,17 @@ class Model(object):
 			self.metrics.append(set_metric(metric))
 
 	def fit(self, x, y, epochs=1, shuffle=False, batch_size=1, *args, **kwargs):
+		"""
+		Trains the model. 
+
+		Parameters
+		----------
+		x (`br.Variable`): The features of the training data.
+		y (`br.Variable`): The lables of the training data.
+		epochs (`int`): The number of iterations of the training data which.
+		shuffle (`bool`): Whether the trainng data should be shuffled before being passed through the model.
+		"""
+
 		if not self.assembled: raise RuntimeError("The model should be assembled before you can train it.")
 		if not self.built: 
 			self.build(x)
@@ -126,6 +173,14 @@ class Model(object):
 				self.optimiser.apply_gradients(self.params, grad)
 		
 	def predict(self, X): 
+		"""
+		Performs a forward pass on the given data.
+
+		Parameters 
+		----------
+		X (`br.Variable`): The Testing data.
+		"""
+
 		output = []
 		for x in X:
 			output.append(self.call(x[..., np.newaxis], training=False).numpy())
@@ -133,6 +188,14 @@ class Model(object):
 		return np.array(output)
 	
 	def save(self, filepath): 
+		"""
+		Serialises the model configs and saves the model as a pickle file to the specified file path.
+
+		Parameters
+		----------
+		filepath (`str`): The file path to the model
+		"""
+
 		self.__config = {
 			"optimiser": self.optimiser.__class__.__name__,
 			"loss": self.loss.__class__.__name__

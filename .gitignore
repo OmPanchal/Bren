@@ -16,3 +16,5 @@ mnist_train
 
 .vscode/
 .vs/
+
+tests/

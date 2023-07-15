@@ -3,6 +3,10 @@ import numpy as np
 
 
 class CategoricalCrossEntropy(Metric):
+    """
+    The metric equivalient of the `CategoricalCrossEntropy` loss function which computes the loss for multiclass classification, with `loss=-(sum(y_true * log(y_pred)))`
+    """
+
     def __init__(self) -> None:
         super().__init__()
         self.total = self.add_weight(0)

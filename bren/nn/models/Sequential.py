@@ -4,6 +4,14 @@ import bren as br
 
 
 class Sequential(Model):
+    """
+    The `Sequential` model takes in a list of layers and passes the data through each of the layers consecutively.
+
+    Parameters 
+    ----------
+    layers (`list`): The list of layers.
+    """
+
     def __init__(self, layers, **kwargs) -> None:
         super().__init__(**kwargs)
         self.layers = layers

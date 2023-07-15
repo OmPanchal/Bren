@@ -1,5 +1,4 @@
 from bren import Variable
-from bren.nn.utils import rename_key
 
 
 class Layer(object):
@@ -30,6 +29,14 @@ class Layer(object):
 	def __delattr__(self, __name) -> None: ...
 	
 	def build(self, input_shape, input_dtype, **kwargs):
+		"""
+		Builds the model
+
+		Parameters
+		----------
+		input_shape (`tuple`): the shape of the input value
+		input_dtype (`str`): the data type of the input value
+		"""
 		for key, value in zip(self.__dict__.keys(), self.__dict__.values()):
 			if type(value) is Variable: self.trainable[key] = value
 		
@@ -37,12 +44,25 @@ class Layer(object):
 
 	def set_built(self, bool): self.built = bool
 
-	def call(self, x): ...
+	def call(self, x): 
+		"""
+		Where the computation of the layer will take place
+
+		Parameters
+		----------
+		x (`br.Variable`): the input to the layer
+		"""
+		...
 
 	def add_weight(self, val, **kwargs):
+		"""
+		Creates and returns a Variable
+
+		Parameters
+		----------
+		val (`list`, `np.ndarray`, `br.Variable`): the value of the array
+		"""
 		var = Variable(val, **kwargs)
-		# self.trainable.append(var)
-		# if kwargs.get("trainable") is not False: self.trainable.append(var)
 		return var
 
 	def set_weights(self, params):
@@ -55,9 +75,13 @@ class Layer(object):
 
 	def set_config(self, dictionary): self.__dict__ = dictionary 
 
-	def config(self) -> dict:
+	def config(self):
+		"""
+		Returns the model config in the form of a dictionary
+		"""
 		if "layer" in self.__dict__.keys():
 			raise AttributeError(f"The attribute 'layer' is reserved for the model's internals, please change the attribute name")
 
-		self.__dict__ = {"layer": self.__class__.__name__, **self.__dict__}
 		return {"layer": self.__class__.__name__, **self.__dict__}
+	
+

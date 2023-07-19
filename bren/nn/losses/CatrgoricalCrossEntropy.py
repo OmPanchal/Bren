@@ -12,6 +12,4 @@ class CategoricalCrossEntropy(Loss):
 
 	def __init__(self) -> None:
 		super().__init__()
-
-	def __call__(self, y_pred, y_true, *args, **kwargs):
-		return categorical_cross_entropy(y_pred, y_true)
+		self.func = categorical_cross_entropy

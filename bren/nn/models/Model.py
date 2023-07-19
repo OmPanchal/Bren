@@ -4,6 +4,7 @@ from bren.nn.metrics import get_metric
 from bren.nn.losses import get_loss
 from bren.nn.optimisers import get_optimiser
 import pickle
+import copy
 
 
 def set_metric(metric):
@@ -12,7 +13,10 @@ def set_metric(metric):
 	if type(metric) is str:
 		out = get_metric(metric)()
 	elif type(metric).__name__ == "function":
-		out = get_metric(metric.__name__)()
+		try: 
+			out = get_metric(metric.__name__)()
+		except KeyError:
+			out = br.nn.metrics.metric_from_loss(metric)()
 	elif issubclass(type(metric), br.nn.metrics.Metric):
 		out = metric
 	else: out = get_metric(metric.__name__)()
@@ -25,7 +29,10 @@ def set_loss(loss):
 	if type(loss) is str:
 		out = get_loss(loss)()
 	elif type(loss).__name__ == "function":
-		out = get_loss(loss.__name__)()
+		try:
+			out = get_loss(loss.__name__)()
+		except KeyError: 
+			out = br.nn.losses.Loss(func=loss)
 	elif issubclass(type(loss), br.nn.losses.Loss):
 		out = loss
 	else: out = get_loss(loss.__name__)()
@@ -55,6 +62,8 @@ class Model(object):
 
 		self.trainable = kwargs.get("trainable") or []
 		self.params = []
+		self.serialised = False
+		self.copy = None 
 
 	@property
 	def config(self): return self.__config
@@ -117,7 +126,7 @@ class Model(object):
 		for metric in metrics:
 			self.metrics.append(set_metric(metric))
 
-	def fit(self, x, y, epochs=1, shuffle=False, batch_size=1, *args, **kwargs):
+	def fit(self, x, y, epochs=1, shuffle=False, batch_size=1, print_details=True, *args, **kwargs):
 		"""
 		Trains the model. 
 
@@ -127,6 +136,7 @@ class Model(object):
 		y (`br.Variable`): The lables of the training data.
 		epochs (`int`): The number of iterations of the training data which.
 		shuffle (`bool`): Whether the trainng data should be shuffled before being passed through the model.
+		print_details (`bool`): Whether the loss or metrics values are printed out while training.
 		"""
 
 		if not self.assembled: raise RuntimeError("The model should be assembled before you can train it.")
@@ -143,12 +153,13 @@ class Model(object):
 		for i in range(1, epochs + 1):
 			self.__train_batch(X_batch, Y_batch)
 
-			print(f"EPOCH {i}/{epochs}: ", end="")
+			if print_details:
+				print(f"EPOCH {i}/{epochs}: ", end="")
 
-			for metric in self.metrics:
-				print(metric.__class__.__name__, ":", metric.result().numpy(), end=" - ")
-				metric.reset()
-			print()
+				for metric in self.metrics:
+					print(metric.__class__.__name__, ":", metric.result().numpy(), end=" - ")
+					metric.reset()
+				print()
 		
 	def add_weight(self, val, **kwargs):
 		self.trainable.append(val)
@@ -211,4 +222,3 @@ class Model(object):
 		
 		with open(filepath, "wb") as f:
 			pickle.dump(self, f)
-		

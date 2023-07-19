@@ -11,9 +11,8 @@ class MeanSquaredError(Loss):
 	
 	def __init__(self) -> None:
 		super().__init__()
+		self.func = mse
 
-	def __call__(self, y_pred, y_true, *args, **kwargs):
-		return mse(y_pred, y_true)
 
 MSE = MeanSquaredError
 mean_squared_error = mse

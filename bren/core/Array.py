@@ -19,6 +19,7 @@ class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
 			self._i = np.array(value._i, dtype=self.dtype)
 		else: self._i = np.array(value, dtype=self.dtype)
 		self.shape = self._i.shape
+		self.ndim = self._i.ndim
 		self.size = self._i.size
 		self.name = name
 		self.frozen = False
@@ -68,7 +69,7 @@ class Array(np.lib.mixins.NDArrayOperatorsMixin, typing.Sequence):
 
 		val = ufunc(*scalars, **kwargs)
 		source = make_ops_source(ufunc.__name__, inputs=sources, value=val)
-		return self.__class__(val, dtype=self.dtype, source=source, )	
+		return self.__class__(val, dtype=self.dtype, source=source)	
 
 	def __set_source_scalar(self, inps):
 		scalars = []

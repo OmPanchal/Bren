@@ -44,7 +44,7 @@ class Metric(object):
 	
 	def result(self):
 		"""
-		Returns the final current value of the metric
+		Returns the final current value of the metrics
 		"""
 		...
 

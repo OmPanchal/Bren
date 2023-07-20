@@ -28,8 +28,10 @@ class Sequential(Model):
             Z = layer(Z, training=training)
         return Z
     
-    def save(self, filepath):
+    def serialise(self):
         for i, layer in enumerate(self.layers):
             self.layers[i] = layer.config()
-
+        return super().serialise()
+    
+    def save(self, filepath):
         return super().save(filepath)

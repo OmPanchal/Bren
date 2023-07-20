@@ -7,11 +7,16 @@ import pickle
 import copy
 
 
-def set_metric(metric):
+def set_metric(metric, custom_obs={}):
 	out = None
-
 	if type(metric) is str:
-		out = get_metric(metric)()
+		try:
+			out = get_metric(metric)()
+		except KeyError:
+			try:
+				out = set_metric(custom_obs[metric])
+			except KeyError:
+				raise KeyError(f"custom object {metric} could not be found")
 	elif type(metric).__name__ == "function":
 		try: 
 			out = get_metric(metric.__name__)()
@@ -19,22 +24,32 @@ def set_metric(metric):
 			out = br.nn.metrics.metric_from_loss(metric)()
 	elif issubclass(type(metric), br.nn.metrics.Metric):
 		out = metric
+	elif isinstance(metric, type):
+		out = metric()
 	else: out = get_metric(metric.__name__)()
 
 	return out
 
-def set_loss(loss):
+def set_loss(loss, custom_obs={}):
 	out = None
 
 	if type(loss) is str:
-		out = get_loss(loss)()
+		try: 
+			out = get_loss(loss)()
+		except KeyError:
+			try: 
+				out = set_loss(custom_obs[loss])
+			except KeyError:
+				raise KeyError(f"custom object {loss} could not be found")
 	elif type(loss).__name__ == "function":
 		try:
 			out = get_loss(loss.__name__)()
 		except KeyError: 
-			out = br.nn.losses.Loss(func=loss)
+			out = br.nn.losses.Loss(name=loss.__name__, func=loss)
 	elif issubclass(type(loss), br.nn.losses.Loss):
 		out = loss
+	elif isinstance(loss, type):
+		out = loss()
 	else: out = get_loss(loss.__name__)()
 
 	return out
@@ -65,6 +80,8 @@ class Model(object):
 		self.serialised = False
 		self.copy = None 
 
+		self.custom_obs = None
+
 	@property
 	def config(self): return self.__config
 	@config.setter
@@ -80,6 +97,40 @@ class Model(object):
 		value: The value
 		"""
 		self.__config.update({**self.config, key: value})
+
+	def assemble(self, loss=None, optimiser=None, metrics=[], **kwargs):
+		"""
+		Establishes the loss function, the optimiser and the metrics of the model (the loss function is by default added to the metrics).
+
+		Parameters
+		----------
+		loss (`str`, `function`, `br.nn.losses.Loss`): The loss function of the model
+		optimiser (`str`, `br.nn.optimisers.Optimiser`): The optimiser of the model
+		metrics (`list`): A list of all of the metrics which you want to be displayed
+		"""
+
+		self.optimiser = None
+		self.metrics = []
+		self.loss = None
+
+		self.assembled = True
+		self.loss = set_loss(loss, self.custom_obs)
+		self.optimiser = set_optimiser(optimiser)
+		self.metrics.append(set_metric(self.loss.func, custom_obs=self.custom_obs))
+
+		for metric in metrics:
+			self.metrics.append(set_metric(metric, custom_obs=self.custom_obs))
+
+
+	def set_custom_object(self, obs): 
+		"""
+		Updates the value of the of the custom objects attirbute, which is initiallly set to `None`
+
+		Parameters
+		----------
+		obs (`dict`): The key value pairs of the custom components
+		"""
+		self.custom_obs = obs
 
 	def call(self, x, training=None):
 		"""
@@ -102,29 +153,6 @@ class Model(object):
 		"""
 		self.built = True
 		self.call(input[0]) 
-	
-	def assemble(self, loss=None, optimiser=None, metrics=[], **kwargs):
-		"""
-		Establishes the loss function, the optimiser and the metrics of the model (the loss function is by default added to the metrics).
-
-		Parameters
-		----------
-		loss (`str`, `function`, `br.nn.losses.Loss`): The loss function of the model
-		optimiser (`str`, `br.nn.optimisers.Optimiser`): The optimiser of the model
-		metrics (`list`): A list of all of the metrics which you want to be displayed
-		"""
-
-		self.optimiser = None
-		self.metrics = []
-		self.loss = None
-
-		self.assembled = True
-		self.loss = set_loss(loss)
-		self.optimiser = set_optimiser(optimiser)
-		self.metrics.append(set_metric(loss))
-
-		for metric in metrics:
-			self.metrics.append(set_metric(metric))
 
 	def fit(self, x, y, epochs=1, shuffle=False, batch_size=1, print_details=True, *args, **kwargs):
 		"""
@@ -198,27 +226,39 @@ class Model(object):
 
 		return np.array(output)
 	
-	def save(self, filepath): 
+	def serialise(self):
 		"""
-		Serialises the model configs and saves the model as a pickle file to the specified file path.
-
-		Parameters
-		----------
-		filepath (`str`): The file path to the model
+		Serialises the model's attributes
 		"""
 
 		self.__config = {
 			"optimiser": self.optimiser.__class__.__name__,
-			"loss": self.loss.__class__.__name__
+			"loss": self.loss.name
 			}
 		
 		self.__config["metrics"] = []
 		for metric in self.metrics:
 			self.__config["metrics"].append(metric.__class__.__name__)
 
+		try: self.__config["metrics"].remove(self.loss.name)
+		except ValueError: pass
+
 		for key in self.config.keys():
 			try: del self.__dict__[key]
 			except KeyError: ...
-		
+
+
+	def save(self, filepath): 
+		"""
+		Saves the model as a pickle file to the specified file path.
+
+		Parameters
+		----------
+		filepath (`str`): The file path to the model
+		"""
+
+		cop = copy.deepcopy(self)
+		cop.serialise()
+
 		with open(filepath, "wb") as f:
-			pickle.dump(self, f)
+			pickle.dump(cop, f)

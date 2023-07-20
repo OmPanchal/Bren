@@ -9,8 +9,8 @@ class MeanSquaredError(Loss):
 	`MeanSquaredError` computes the loss as `loss=mean((y_pred - y_true) ** 2)`
 	"""
 	
-	def __init__(self) -> None:
-		super().__init__()
+	def __init__(self, name=None, **kwargs) -> None:
+		super().__init__(name, **kwargs)
 		self.func = mse
 
 

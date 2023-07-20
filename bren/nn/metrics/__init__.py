@@ -27,7 +27,7 @@ def metric_from_loss(func, name=None):
 	class MetricFromLoss(Metric):
 		def __init__(self) -> None:
 			super().__init__()
-			self.__class__.__name__ = name or func.__name__.capitalize()
+			self.__class__.__name__ = name or func.__name__
 			self.total = self.add_weight(0)
 			self.count = self.add_weight(0)
 

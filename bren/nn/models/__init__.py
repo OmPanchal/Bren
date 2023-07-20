@@ -32,6 +32,8 @@ def load_model(filepath, custom_objects={}):
     with open(filepath, "rb") as f:
         model = pickle.load(f)
 
+    model.set_custom_object(custom_objects)
+
     if model.__class__.__name__ == "Sequential":
         deserialise_sequential_layers(model, custom_objects)
 

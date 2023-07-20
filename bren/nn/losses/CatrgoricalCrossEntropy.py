@@ -10,6 +10,6 @@ class CategoricalCrossEntropy(Loss):
 	`CategoricalCrossEntropy` computes the loss for multiclass classification, with `loss=-(sum(y_true * log(y_pred + epsilon)))` 
 	"""
 
-	def __init__(self) -> None:
-		super().__init__()
+	def __init__(self, name=None, **kwargs) -> None:
+		super().__init__(name, **kwargs)
 		self.func = categorical_cross_entropy

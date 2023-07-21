@@ -4,10 +4,9 @@ from bren.nn.utils import AliasDict
 from bren.nn.layers import __all__ as layers
 import pickle
 
+__all__ = [Model, Sequential]
 
-MODELS = AliasDict({
-    None: lambda: NameError("No such model found :'(")
-})
+MODELS = AliasDict({})
 
 
 def get_model(name): return MODELS[name]
@@ -41,8 +40,6 @@ def load_model(filepath, custom_objects={}):
     
     return model
 
-
-__all__ = [Model, Sequential]
 
 for cls in __all__:
     MODELS[cls.__name__] = cls

@@ -23,3 +23,7 @@ mnist*.py
 xor*.py
 
 test*
+
+build/
+dist/
+bren.egg-info/

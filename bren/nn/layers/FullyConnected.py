@@ -17,7 +17,7 @@ def set_activation(activation, custom_obs={}):
 	elif issubclass(type(activation), Layer):
 		out = activation
 	elif type(activation).__name__ == "function":
-		out = Activation(activation)
+		out = Activation(activation, name=activation.__name__)
 	else: raise AttributeError(f"{activation} is of invalid type for activation")
 
 	return out
@@ -88,6 +88,7 @@ class FullyConnected(Layer):
 		return self.activation(output)
 	
 	def config(self):
+		print(self.activation.__class__.__name__)
 		self.set_config(rename_key(super().config(), "_units", "units"))
 		self.__dict__["bias_initialiser"] = self.bias_initialiser.__name__
 		self.__dict__["weights_initialiser"] = self.weights_initialiser.__name__

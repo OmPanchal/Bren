@@ -1,7 +1,10 @@
-from bren.nn.layers.Layer import Layer
+from bren.nn.activations.Activation import Activation
 
 
-class Linear(Layer):
+def linear(x): return x
+
+
+class Linear(Activation):
 	"""
 	The linear activation function perform no operation on the input
 
@@ -11,7 +14,5 @@ class Linear(Layer):
 	name (`str`): The name of the activation.
 	"""
 
-	def __init__(self, name=None, **kwargs) -> None:
-		super().__init__(name, **kwargs)
-
-	def call(self, x): return x
+	def __init__(self, name="linear", **kwargs) -> None:
+		super().__init__(linear, name, **kwargs)

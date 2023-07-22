@@ -1,10 +1,10 @@
 import numpy as np
-from bren.nn.layers.Layer import Layer
+from bren.nn.activations.Activation import Activation
 
 
 def tanh(x): return np.tanh(x)
 
-class Tanh(Layer):
+class Tanh(Activation):
 
 	"""
 	Performs `np.tanh(x)` on the inputs
@@ -15,7 +15,5 @@ class Tanh(Layer):
 	name (`str`): The name of the activation.	
 	"""
 
-	def __init__(self, name=None, **kwargs) -> None:
-		super().__init__(name, **kwargs)
-
-	def call(self, x): return tanh(x)
+	def __init__(self, name="tanh", **kwargs) -> None:
+		super().__init__(tanh, name, **kwargs)

@@ -1,5 +1,5 @@
 import numpy as np
-from bren.nn.layers.Layer import Layer
+from bren.nn.activations.Activation import Activation
 from bren.autodiff.operations.ops import custom_gradient
 
 
@@ -9,7 +9,7 @@ def relu_grad(a, leak, dout, value):
 def relu(a, leak): return np.maximum(a * leak, a)
 
 
-class ReLU(Layer):
+class ReLU(Activation):
 	"""
 	[NOTE]: This is also the leaky ReLU function, change the leak parameter to change to leaky ReLU. By default the `leak` parameter for this function is 0 to simulate the nature of a regular ReLU function.
 
@@ -23,8 +23,9 @@ class ReLU(Layer):
 	name (`str`): The name of the activation.
 	"""
 
-	def __init__(self, leak=0, name=None, **kwargs) -> None:
+	def __init__(self, leak=0, name="relu", **kwargs) -> None:
+		super().__init__(relu, name, **kwargs)
 		self.leak = leak
-		super().__init__(name, **kwargs)
+		self.additional_args.append(self.leak)
 
-	def call(self, x): return relu(x, self.leak)
+	

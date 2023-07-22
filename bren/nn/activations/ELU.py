@@ -1,5 +1,5 @@
 import numpy as np
-from bren.nn.layers.Layer import Layer
+from bren.nn.activations.Activation import Activation
 from bren.autodiff.operations.ops import custom_gradient
 
 
@@ -10,7 +10,7 @@ def elu(a, alpha):
 	return np.where(a > 0, a, alpha * (np.exp(a) - 1))
 
 
-class ELU(Layer):
+class ELU(Activation):
 	"""
 	Perform the ELU activation function on the input. 
 	For input values greater than 1 the output will be linear (`x`), while negative values will be computed as `alpha * np.exp(x) - 1` with the alpha hyperparameter determining what negative value the function approches for more and more negative values of the inputs.
@@ -22,8 +22,7 @@ class ELU(Layer):
 	name (`str`): The name of the activation.
 	"""
 
-	def __init__(self, alpha=1, name=None, **kwargs) -> None:
+	def __init__(self, alpha=1, name="elu", **kwargs) -> None:
+		super().__init__(elu, name, **kwargs)
 		self.alpha = alpha
-		super().__init__(name, **kwargs)
-
-	def call(self, x): return elu(x, self.alpha)
+		self.additional_args.append(self.alpha)

@@ -70,3 +70,14 @@ Now that the model is trained, you can test it on test data to evaluate its perf
 pred = model.predict(X) # Test data would be inputted
 model.save("model")
 ```
+### Custom Components
+Custom components can be produced by using the base class of the component or can be in the form of a function, both methods are compatible with the existing components which `br.nn` provides.
+```python
+# Custom activation as a function
+def linear(x): return x
+
+# Custom activation as a class
+class Linear(br.nn.activations.Activation):
+	def __init__(self, name="linear", **kwargs):
+		super().__init__(linear, name, **kwargs)
+```

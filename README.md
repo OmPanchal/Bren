@@ -65,3 +65,8 @@ To train the model, `model.fit` will be called. Here the training features and l
 ```python
 model.fit(X, Y, epochs=100)
 ```
+Now that the model is trained, you can test it on test data to evaluate its performance, and also save it to a file for future use.
+```python
+pred = model.predict(X) # Test data would be inputted
+model.save("model")
+```

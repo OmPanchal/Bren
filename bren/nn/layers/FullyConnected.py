@@ -88,7 +88,6 @@ class FullyConnected(Layer):
 		return self.activation(output)
 	
 	def config(self):
-		print(self.activation.__class__.__name__)
 		self.set_config(rename_key(super().config(), "_units", "units"))
 		self.__dict__["bias_initialiser"] = self.bias_initialiser.__name__
 		self.__dict__["weights_initialiser"] = self.weights_initialiser.__name__

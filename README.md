@@ -21,7 +21,7 @@ print(A + 2) # <Variable value=[3. 4. 5.] dtype=float64>
 ```
 
 ## `br.autodiff` (Automatic Differentiation)
-bren is an automatic differentiation driven neural network library, with backpropagation making use of `br.Graph` to find the derivatives of the trainable parameters with respect to the loss. This is governed by `br.Variable` which keeps track of any operation which have been performed on the `Variable` object. `br.autodiff` is used to produce a computation graph of these recorded computations, this graph can be back tracked to determine the derivatives of a given *dy* value with respect to a given *dx* value. As a gradient, a `br.Constant` is returned (the derivative of a `br.Constant` is always 0). The functionings of `br.Variable` and `br.Constant` are a result of the swift array computation of [numpy](https://numpy.org).
+bren is an automatic differentiation driven neural network library, with backpropagation making use of `br.Graph` to find the derivatives of the trainable parameters with respect to the loss. This is governed by `br.Variable` which keeps track of any operation which have been performed on the `Variable` object. `br.autodiff` is used to produce a computation graph of these recorded operations, this graph can be back tracked to determine the derivatives of a given *dy* value with respect to a given *dx* value. As a gradient, a `br.Constant` is returned (the derivative of a `br.Constant` is always 0). The functionings of `br.Variable` and `br.Constant` are a result of the swift array computation of [numpy](https://numpy.org).
 
 ```python
 import bren as br
@@ -36,4 +36,32 @@ with br.Graph() as g:
 ## `br.nn` (Neural Networks)
 bren's modular design is heavily inspired by the [Keras](https://keras.io) API, allowing users to produce networks comprised of a variety of customisable components. Users are also capable of producing their own custom components such as (layers, activations, initialisers, losses, metrics) through the use of the respective base classes. `br.nn` allows ready made components to be imported and custom components to be produced.
 
-**Your first neural network with bren**
+**Your first neural network with bren**: First prepare the dataset
+```python
+import bren as br
+
+# Test data - The XOR dataset
+X = br.Variable([[0, 0], [0, 1], [1, 0], [1, 1]])
+Y = br.Variable([0, 1, 1, 0])
+```
+Next initialise the `Sequential` model which will be trained to fit the data. It will take in a list of layers through which the data will be passed through consecutively. In the example below, a three fully connected (`FC`) layer neural network is initialised, with activation "tanh".
+```python
+# Initialise the model
+model = br.nn.models.Sequential(layers=[
+	br.nn.layers.FC(2, activation="tanh"),
+	br.nn.layers.FC(32, activation="tanh"),
+	br.nn.layers.FC(1, activation="tanh"),
+])
+```
+`model.assemble` will then be called to establish the optimiser used during gradient descent, the loss function, and metrics to be displayed during training.
+```python
+model.assemble(
+	optimiser="Adam",
+ 	loss=br.nn.losses.MeanSquaredError(),
+	metrics=["accuracy"]
+)
+```
+To train the model, `model.fit` will be called. Here the training features and lables will be specified, as well other arguments such as epochs (the number of iterations of the data while training the metwork).
+```python
+model.fit(X, Y, epochs=100)
+```

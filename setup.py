@@ -10,7 +10,7 @@ with open(path.join(HERE, 'PACKAGE.md'), encoding='utf-8') as f:
 
 setup(
     name="bren",
-    version="0.1.6",
+    version="0.1.7",
     description="A simple numpy based neural network library inspired by Tensorflow/Keras.",
     long_description=long_description,
     long_description_content_type="text/markdown",

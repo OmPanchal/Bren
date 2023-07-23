@@ -27,3 +27,5 @@ test*
 build/
 dist/
 bren.egg-info/
+
+.travis.yml

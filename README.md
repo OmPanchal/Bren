@@ -72,7 +72,7 @@ model.assemble(
 )
 ```
 
-To train the model, `model.fit` will be called. Here the training features and lables will be specified, as well other arguments such as epochs (the number of iterations of the data while training the metwork).
+To train the model, `model.fit` will be called. Here the training features and lables will be specified, as well other arguments such as epochs (the number of iterations of the data while training the network).
 
 ```python
 model.fit(X, Y, epochs=100)

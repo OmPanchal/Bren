@@ -18,7 +18,11 @@ def fetch(url):
 			data = requests.get(url).content
 			f.write(data)
 	os.remove(path)
-	return np.frombuffer(gzip.decompress(data), dtype=np.uint8).copy()
+	try: 
+		return np.frombuffer(gzip.decompress(data), dtype=np.uint8).copy()
+	except:
+		print("failed to load mnist data. :(")
+		exit()
 
 
 def load_mnist(dtype="float64"):
